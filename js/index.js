@@ -3,6 +3,7 @@ fetch('http://localhost:3000/books')
 .then(res => res.json())
 .then(json => json.forEach(book => showList(book)))
 
+
 const showList = (book) => {
     let ul = document.querySelector('ul')
     let li = document.createElement('li')
@@ -15,7 +16,6 @@ const showList = (book) => {
 const showBook = (e,book) => {
     let showPanel = document.getElementById('show-panel')
     showPanel.innerHTML = ''
-    console.log(book)
     let div = document.createElement('div')
     div.className = 'card'
     div.id = book.id
@@ -38,32 +38,31 @@ const showBook = (e,book) => {
         li.innerText = user.username
         bookCard.appendChild(li)
     })
-
+    
     let btn = document.createElement('button')
     btn.innerText = 'like'
 
-    btn.addEventListener('click', addLike(book))
-
+    btn.addEventListener('click', (e) => addLike(book))
+    showPanel.appendChild(btn)
 }
 
 const addLike = (book) => {
     let arr = book.users
     arr.push({"id":1, "username":"pouros"})
+    
+    let list = document.getElementById(book.id)
+    let li = document.createElement('li')
+    li.textContent = 'pouros'
+    list.appendChild(li)
+
     fetch(`http://localhost:3000/books/${book.id}`,{
         method:'PATCH',
         headers:{
-            'Content-Type':'application/json'
+            'Content-Type':'application/json',
+            Accept: 'application/json'
         },
         body: JSON.stringify({users:arr})
     })
-    
+    .then(res => res.json())    
 }
 });
-
-// author: "Yoko Ono"
-// description: "Back in print for the first time in nearly thirty years, here is Yoko Ono's whimsical, delightful, subversive, startling book of instructions for art and for life. 'Burn this book after you've read it.' -- Yoko 'A dream you dream alone may be a dream, but a dream two people dream together is a reality. This is the greatest book I've ever burned.' -- John"
-// id: 1
-// img_url: "https://books.google.com/books/content?id=3S8Rwr-iBdoC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
-// subtitle: "A book of Instruction and Drawings."
-// title: "Grapefruit"
-// users: (2) [{…}, {…}]
